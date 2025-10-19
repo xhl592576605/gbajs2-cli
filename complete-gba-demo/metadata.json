@@ -1,0 +1,101 @@
+{
+  "frames": [
+    {
+      "number": 1,
+      "filename": "frame_000001.png",
+      "size": 7711,
+      "timestamp": 115
+    },
+    {
+      "number": 2,
+      "filename": "frame_000002.png",
+      "size": 7884,
+      "timestamp": 135
+    },
+    {
+      "number": 3,
+      "filename": "frame_000003.png",
+      "size": 7912,
+      "timestamp": 156
+    },
+    {
+      "number": 4,
+      "filename": "frame_000004.png",
+      "size": 7940,
+      "timestamp": 177
+    },
+    {
+      "number": 5,
+      "filename": "frame_000005.png",
+      "size": 7891,
+      "timestamp": 198
+    },
+    {
+      "number": 6,
+      "filename": "frame_000006.png",
+      "size": 7889,
+      "timestamp": 219
+    },
+    {
+      "number": 7,
+      "filename": "frame_000007.png",
+      "size": 7775,
+      "timestamp": 240
+    },
+    {
+      "number": 8,
+      "filename": "frame_000008.png",
+      "size": 7927,
+      "timestamp": 260
+    },
+    {
+      "number": 9,
+      "filename": "frame_000009.png",
+      "size": 7911,
+      "timestamp": 281
+    },
+    {
+      "number": 10,
+      "filename": "frame_000010.png",
+      "size": 7854,
+      "timestamp": 302
+    },
+    {
+      "number": 11,
+      "filename": "frame_000011.png",
+      "size": 7841,
+      "timestamp": 324
+    },
+    {
+      "number": 12,
+      "filename": "frame_000012.png",
+      "size": 7766,
+      "timestamp": 344
+    },
+    {
+      "number": 13,
+      "filename": "frame_000013.png",
+      "size": 7803,
+      "timestamp": 365
+    },
+    {
+      "number": 14,
+      "filename": "frame_000014.png",
+      "size": 7769,
+      "timestamp": 386
+    },
+    {
+      "number": 15,
+      "filename": "frame_000015.png",
+      "size": 7764,
+      "timestamp": 406
+    }
+  ],
+  "startTime": "2025-10-19T15:19:12.693Z",
+  "format": "png",
+  "quality": 95,
+  "endTime": "2025-10-19T15:19:13.117Z",
+  "totalFrames": 15,
+  "duration": 424,
+  "averageFrameSize": 7842.466666666666
+}
