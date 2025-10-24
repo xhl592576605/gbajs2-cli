@@ -228,4 +228,4 @@ gbajs2 game.gba --fps 60 --renderer both
 - **颜色**: ANSI 256色（推荐方案，平衡兼容性和效果）
 
 ### 测试文件
-- gba 测试文件在 @resources/PokemonEmerald.gba
+- gba 测试文件在 `resources/PokemonEmerald.gba`
