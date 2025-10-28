@@ -294,11 +294,10 @@ class ARMCore {
 			}
 			this.pageId = pageId;
 		} else {
-			// Add null check
+			// Add null check - no warning to reduce spam
 			if (this.mmu.memory[region]) {
 				this.pageMask = this.mmu.memory[region].PAGE_MASK;
 			} else {
-				console.warn(`Warning: Memory region ${region} is null in fetchPage`);
 				this.pageMask = 0;
 			}
 			this.pageRegion = region;
@@ -312,9 +311,8 @@ class ARMCore {
 		this.fetchPage(address);
 		var offset = (address & this.pageMask) >> 2;
 
-		// Add null check for this.page
+		// Add null check for this.page - no warning to reduce spam
 		if (!this.page) {
-			console.warn("Warning: this.page is null in loadInstructionArm");
 			// Return a simple instruction to avoid crashing
 			var self = this;
 			var instruction = function () {
@@ -346,9 +344,8 @@ class ARMCore {
 		this.fetchPage(address);
 		var offset = (address & this.pageMask) >> 1;
 
-		// Add null check for this.page
+		// Add null check for this.page - no warning to reduce spam
 		if (!this.page) {
-			console.warn("Warning: this.page is null in loadInstructionThumb");
 			// Return a simple instruction to avoid crashing
 			var self = this;
 			var instruction = function () {

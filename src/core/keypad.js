@@ -250,6 +250,13 @@ class GameBoyAdvanceKeypad {
 				break;
 		}
 	}
+
+	// Add method to directly register keypad state from external input
+	registerKeypadState(keyState) {
+		// keyState should be a bitfield where 0 = pressed, 1 = released
+		// This matches the GBA keypad register format
+		this.currentDown = keyState & 0x3ff;
+	}
 }
 
 module.exports = { GameBoyAdvanceKeypad };

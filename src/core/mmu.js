@@ -7,6 +7,10 @@ class MemoryBlock extends MemoryView {
 	constructor(memory, offset) {
 		super(memory, offset);
 		this.mask = memory.byteLength - 1;
+		this.ICACHE_PAGE_BITS = 10; // 默认页面位数
+		this.PAGE_MASK = (2 << this.ICACHE_PAGE_BITS) - 1;
+		// 初始化icache数组
+		this.icache = new Array(memory.byteLength >> (this.ICACHE_PAGE_BITS + 1));
 		this.resetMask();
 	}
 	resetMask() {
@@ -61,7 +65,12 @@ class ROMView extends MemoryView {
 		super(rom, offset);
 		this.ICACHE_PAGE_BITS = 10;
 		this.PAGE_MASK = (2 << this.ICACHE_PAGE_BITS) - 1;
-		this.icache = new Array(rom.byteLength >> (this.ICACHE_PAGE_BITS + 1));
+		// 防止空指针错误，确保rom不为null
+		if (rom) {
+			this.icache = new Array(rom.byteLength >> (this.ICACHE_PAGE_BITS + 1));
+		} else {
+			this.icache = new Array(1); // 最小数组防止访问错误
+		}
 		this.mask = 0x01ffffff;
 		this.resetMask();
 	}
@@ -285,7 +294,7 @@ class GameBoyAdvanceMMU {
 	clear() {
 		this.badMemory = new BadMemory(this, this.cpu);
 		this.memory = [
-			this.bios,
+			this.bios || this.badMemory, // Use badMemory if bios is not loaded
 			this.badMemory,
 			new MemoryBlock(new ArrayBuffer(this.SIZE_WORKING_RAM), 0),
 			new MemoryBlock(new ArrayBuffer(this.SIZE_WORKING_IRAM), 0),
@@ -564,26 +573,34 @@ class GameBoyAdvanceMMU {
 			(1 + this.waitstatesSeq32[memory >>> this.BASE_OFFSET]) * (seq - 1);
 	}
 	addressToPage(region, address) {
-		// Add null check
+		// Add null check - no warning to reduce spam
 		if (!this.memory[region]) {
-			console.warn(`Warning: Memory region ${region} is null in addressToPage`);
 			return 0;
 		}
-		return address >> this.memory[region].ICACHE_PAGE_BITS;
+		// Add safety check for ICACHE_PAGE_BITS
+		var pageBits = this.memory[region].ICACHE_PAGE_BITS || 10; // default to 10 if not set
+		return address >> pageBits;
 	}
 	accessPage(region, pageId) {
-		// Add null check
+		// Add null check - no warning to reduce spam
 		if (!this.memory[region]) {
-			console.warn(`Warning: Memory region ${region} is null in accessPage`);
 			return null;
 		}
 
 		var memory = this.memory[region];
+		// Add additional null check for icache
+		if (!memory.icache) {
+			console.warn(`Warning: Memory region ${region} has no icache in accessPage`);
+			return null;
+		}
+
 		var page = memory.icache[pageId];
 		if (!page || page.invalid) {
+			// Add safety check for ICACHE_PAGE_BITS
+			var pageBits = memory.ICACHE_PAGE_BITS || 10; // default to 10 if not set
 			page = {
-				thumb: new Array(1 << memory.ICACHE_PAGE_BITS),
-				arm: new Array(1 << (memory.ICACHE_PAGE_BITS - 1)),
+				thumb: new Array(1 << pageBits),
+				arm: new Array(1 << (pageBits - 1)),
 				invalid: false
 			};
 			memory.icache[pageId] = page;
