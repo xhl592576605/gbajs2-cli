@@ -1,0 +1,47 @@
+{
+  "name": "gbajs2-cli",
+  "version": "1.0.0",
+  "description": "Node.js终端GBA模拟器",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "gbajs2": "./bin/gbajs2"
+  },
+  "scripts": {
+    "dev": "NODE_ENV=development node src/index.js",
+    "start": "NODE_ENV=development node src/index.js",
+    "test": "NODE_ENV=development node --test test/**/*.test.js",
+    "lint": "NODE_ENV=development eslint src/ --ext .js",
+    "format": "NODE_ENV=development prettier --write src/**/*.js",
+    "clean": "rm -rf node_modules && pnpm install",
+    "postinstall": "node scripts/build-speaker.js"
+  },
+  "keywords": [
+    "gba",
+    "emulator",
+    "terminal",
+    "cli",
+    "gameboy"
+  ],
+  "author": "xuhuale",
+  "license": "BSD-2-Clause",
+  "packageManager": "pnpm@10.20.0",
+  "engines": {
+    "node": ">=14.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "dependencies": {
+    "@kmamal/sdl": "^0.11.13",
+    "ansi-colors": "^4.1.3",
+    "cac": "^6.7.14",
+    "ink": "^3.2.0",
+    "react": "^17.0.2",
+    "speaker": "^0.5.5"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.1",
+    "jest": "^28.1.3",
+    "node-gyp": "^11.5.0",
+    "prettier": "^2.8.8"
+  }
+}

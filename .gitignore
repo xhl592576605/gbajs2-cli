@@ -1,0 +1,16 @@
+.DS_Store
+
+# 日志文件 - 开发模式
+logs/
+*.log
+
+# 依赖目录
+node_modules/
+
+# 测试覆盖率
+coverage/
+
+# 环境配置
+.env
+.env.local
+.env.*.local
