@@ -83,7 +83,7 @@ cli
   .option('--auto-fit', '自动根据终端尺寸计算缩放', { default: true })
   .option('--terminal-theme <theme>', '终端主题 light|dark|auto', { default: 'auto' })
   .option('--fps-limit <number>', '目标帧率 (30-60)', { default: 59.73 })
-  .option('--renderer <mode>', '渲染器 terminal|gui', { default: 'terminal' })
+  .option('--renderer <mode>', '渲染器 terminal|terminal-image|gui', { default: 'terminal' })
   .option('--no-audio', '禁用音频输出')
   .option('--bios <path>', '指定 GBA BIOS 文件路径 (16KB 原版)')
   .option('--log-level <level>', '日志级别 (error, warn, info, debug, trace)', { default: 'info' })
@@ -129,9 +129,11 @@ cli
 
       const rendererTarget = String(options.renderer || 'terminal').toLowerCase();
       let useGuiMode = rendererTarget === 'gui';
-      if (rendererTarget !== 'terminal' && rendererTarget !== 'gui') {
+      let useTerminalImageMode = rendererTarget === 'terminal-image';
+      if (rendererTarget !== 'terminal' && rendererTarget !== 'terminal-image' && rendererTarget !== 'gui') {
         console.warn(`⚠️ 未知渲染器 ${rendererTarget} ，将使用 terminal 模式`);
         useGuiMode = false;
+        useTerminalImageMode = false;
       }
 
       const autoFitRequested = options.autoFit !== false;
@@ -160,7 +162,8 @@ cli
         autoExitAfterInit: shouldAutoExit,
         autoExitDelay,
         autoFit: terminalAutoFit,
-        fpsLimit
+        fpsLimit,
+        rendererTarget: useTerminalImageMode ? 'terminal-image' : 'terminal'
       };
 
       console.log(`🎮 ROM: ${path.basename(romPath)}`);
@@ -207,7 +210,7 @@ cli
         process.exit(1);
       }
 
-      console.log('🖥️ 渲染器: Terminal (Ink)');
+      console.log(useTerminalImageMode ? '🖥️ 渲染器: Terminal (Terminal-Image)' : '🖥️ 渲染器: Terminal (Character Mapping)');
       console.log(`🧮 缩放策略: ${scaleSummary}`);
       console.log(`🎨 终端主题: ${terminalTheme}${themeSource === 'user' ? '' : ` (${themeSource})`}`);
 

@@ -1,71 +1,101 @@
-gbajs2 -- Community Fork
-======
+# gbajs2-cli
 
-gbajs2 is a Game Boy Advance emulator written in Javascript from scratch using HTML5 technologies like Canvas and Web Audio. 
-It is freely licensed and works in any modern browser without plugins.
+Node.js 终端 GBA 模拟器 / Node.js Terminal GBA Emulator
 
-Use it online! <https://andychase.me/gbajs2>
+基于 [gbajs](https://github.com/endrift/gbajs) 核心重构，支持在终端（Terminal）或独立窗口（GUI）中运行 Game Boy Advance 游戏。
 
-See the [issues page](https://github.com/andychase/gbajs2/issues) for feature suggestions and ways you can help contribute!
+## 特性 / Features
 
-Mailing list for general discussion or if you want to just be kept in the loop: https://groups.google.com/forum/#!forum/gbajs2
+- **双渲染模式**：
+  - 🖥️ **Terminal Mode**：使用 ANSI 字符画在终端内渲染，支持自动缩放和主题适配（基于 `ink`）。
+  - 🖼️ **GUI Mode**：使用 SDL2 弹出独立窗口渲染，支持 60FPS 流畅画面（基于 `@kmamal/sdl`）。
+- **音频支持**：集成 `speaker` 模块，支持实时音频输出。
+- **完整交互**：支持键盘输入、暂停、存档（文件系统持久化）。
+- **调试工具**：内置日志系统，支持按日期查看和清理日志。
 
-## Feature List
+## 安装 / Installation
 
-* Playable compatibility, see [compatibility](https://github.com/andychase/gbajs2/wiki/Compatibility-List)
-* Acceptable performance on modern browsers
-* Pure javascript, allowing easy API access
-* Realtime clock gamepad support (Pokemon Ruby)
-* Save games
-
-## CLI 模式（gbajs2-cli）
-
-仓库同时提供一个 Node.js CLI 版本，默认在终端内使用 Ink 渲染字符画面，也可以通过 GUI 模式打开 SDL 窗口：
+需要 Node.js >= 14 和 pnpm。
 
 ```bash
-# 终端渲染（默认）
-pnpm start -- <path-to-rom>
+git clone https://github.com/your-repo/gbajs2-cli.git
+cd gbajs2-cli
+pnpm install
 
-# GUI 窗口渲染（实验特性）
-pnpm start -- --renderer=gui <path-to-rom>
+# 如果需要使用 GUI 模式，需批准 SDL 构建脚本
+pnpm approve-builds
 ```
 
-### GUI 窗口模式
+## 使用 / Usage
 
-- 依赖 `@kmamal/sdl` 预编译模块。首次 `pnpm install` 后执行 `pnpm approve-builds` 允许下载预编译的 `.node`，必要时可手动运行 `node node_modules/@kmamal/sdl/scripts/install.mjs`。
-- SDL 初始化失败（缺少依赖、无显示服务器等）时 CLI 会输出 `GuiRendererUnavailable` 的提示，并自动降级回终端渲染。
-- 键位映射：`z/x/a/s` = A/B/L/R，方向键控制方向，`p/o` 对应 Start/Select，`Shift+Enter` 暂停/恢复，`Esc` 或 `Ctrl+C` 立即退出。
-- HUD 会显示 ROM 名称、实时 FPS 以及暂停状态，窗口失焦时会自动暂停并释放按键。
-- 窗口默认按整数倍自动适配（可拖拽/最大化），当窗口尺寸正好是 240×160 的整数倍时会消除黑边；最小化后重新恢复会继续渲染。
+### 启动游戏
 
-如需手动验证 GUI 模式，可在 macOS/Linux/Windows 上运行 `gbajs2 --renderer=gui <rom>`，确认 SDL 窗口能以整数倍缩放显示 240×160 画面。
+```bash
+# 默认终端模式
+pnpm start -- <path-to-rom>
+
+# GUI 模式
+pnpm start -- --renderer=gui <path-to-rom>
+
+# 或者使用全局命令（如果已 link）
+gbajs2 <path-to-rom>
+```
+
+### 命令行参数
+
+| 参数 | 简写 | 描述 | 默认值 |
+|---|---|---|---|
+| `--renderer` | | 渲染模式 (`terminal` / `gui`) | `terminal` |
+| `--scale` | `-c` | 画面缩放比例 (仅终端模式有效，留空自动适配) | `auto` |
+| `--no-audio` | | 禁用音频 | `false` |
+| `--bios` | | 指定 BIOS 文件路径 | 内置 HLE |
+| `--fps-limit` | | 帧率限制 | `59.73` |
+| `--log-level` | | 日志级别 (`info`, `debug`, `warn`, `error`) | `info` |
+| `--sampling` | | 采样模式 (`balanced` / `nearest`) | `balanced` |
+| `--density` | | 渲染密度 (`balanced` / `braille`) | `balanced` |
+
+### 常用命令
+
+```bash
+# 查看帮助
+gbajs2 --help
+
+# 查看日志
+gbajs2 logs
+
+# 清理 7 天前的日志
+gbajs2 logs --cleanup 7
+```
+
+## 按键操作 / Controls
+
+| GBA 按键 | 键盘按键 |
+|---|---|
+| ⬆️ ⬇️ ⬅️ ➡️ | 方向键 / Arrow Keys |
+| A | `Z` |
+| B | `X` |
+| L | `A` |
+| R | `S` |
+| Start | `P` |
+| Select | `O` |
+| **系统功能** | **快捷键** |
+| 暂停/恢复 | `Shift + Enter` |
+| 退出 | `Esc` 或 `Ctrl + C` |
+
+## 开发 / Development
+
+```bash
+# 启动开发模式
+pnpm dev <path-to-rom>
+
+# 代码检查
+pnpm lint
+pnpm format
+
+# 运行测试
+pnpm test
+```
 
 ## License
-Original work by Endrift. Repo: (Archived / No longer maintained) https://github.com/endrift/gbajs
 
-Copyright © 2012 – 2013, Jeffrey Pfau
-Copyright © 2020, Andrew Chase
-
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-* Redistributions of source code must retain the above copyright notice, this
-  list of conditions and the following disclaimer.
-
-* Redistributions in binary form must reproduce the above copyright notice,
-  this list of conditions and the following disclaimer in the documentation
-  and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
-LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
+BSD-2-Clause
